@@ -1,7 +1,7 @@
-use decancer::Decancer as Decancer_;
+use decancer::Decancer;
 use pyo3::prelude::*;
 
-const BRIDGE: Decancer_ = Decancer_::new();
+const BRIDGE: Decancer = Decancer::new();
 
 /// Parses a jank string into a less toxic lowercase string.
 #[pyfunction]
