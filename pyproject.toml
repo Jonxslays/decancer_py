@@ -2,11 +2,25 @@
 name = "decancer_py"
 requires-python = ">=3.7,<3.11"
 description = "Python bindings for decancer."
+authors = [{ name = "Jonxslays" }]
+license = { file = "LICENSE" }
+readme = "README.md"
+version = "0.1.0"
 classifiers = [
+    "License :: OSI Approved :: MIT License",
     "Programming Language :: Rust",
     "Programming Language :: Python :: Implementation :: CPython",
-    "Programming Language :: Python :: Implementation :: PyPy",
+    "Topic :: Software Development :: Libraries :: Python Modules",
+    "Typing :: Typed",
 ]
+
+[project.urls]
+homepage = "https://github.com/Jonxslays/decancer_py"
+repository = "https://github.com/Jonxslays/decancer_py"
+documentation = "https://github.com/Jonxslays/decancer_py"
+
+[tool.maturin]
+strip = true
 
 [tool.poetry]
 name = "decancer_py"
