@@ -1,0 +1,25 @@
+[project]
+name = "decancer_py"
+requires-python = ">=3.7,<3.11"
+description = "Python bindings for the Rust crate - decancer."
+classifiers = [
+    "Programming Language :: Rust",
+    "Programming Language :: Python :: Implementation :: CPython",
+    "Programming Language :: Python :: Implementation :: PyPy",
+]
+
+[tool.poetry]
+name = "decancer_py"
+version = "0.1.0"
+authors = ["Jonxslays"]
+description = "Python bindings for the Rust crate - decancer."
+
+[tool.poetry.dependencies]
+python = ">=3.7,<3.11"
+maturin = "0.13.0"
+
+[tool.poetry.dev-dependencies]
+
+[build-system]
+requires = ["maturin>=0.13,<0.14"]
+build-backend = "maturin"
