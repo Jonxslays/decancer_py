@@ -21,9 +21,16 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "baf1de4339761588bc0619e3cbc0120ee582ebb74b53b4efbf79117bd2da40fd"
 
 [[package]]
+name = "decancer"
+version = "1.4.1"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "4b136f741547a1813c4cbc9b5b214770b6812207191feb065ac238beeea882fc"
+
+[[package]]
 name = "decancer_py"
 version = "0.1.0"
 dependencies = [
+ "decancer",
  "pyo3",
 ]
 

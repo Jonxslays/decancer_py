@@ -1,12 +1,24 @@
 [package]
 name = "decancer_py"
+description = "Python bindings for decancer."
 version = "0.1.0"
 edition = "2021"
+authors = ["Jonxslays"]
+license = "MIT"
+readme = "README.md"
+homepage = "https://github.com/Jonxslays/decancer_py"
+repository = "https://github.com/Jonxslays/decancer_py"
+documentation = "https://github.com/Jonxslays/decancer_py"
+keywords = ["decancer", "ffi", "string", "parsing", "unicode"]
+categories = ["ffi", "text-processing"]
 
-# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 [lib]
 name = "decancer_py"
 crate-type = ["cdylib"]
 
 [dependencies]
+# Sweet lib that does all the work for us
+decancer = "1.4.1"
+
+# The most beautiful bindings in existence
 pyo3 = { version = "0.16.5", features = ["extension-module"] }
