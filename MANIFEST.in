@@ -1,3 +1,0 @@
-include Cargo.toml
-recursive-include decancer_py *
-recursive-include src *
