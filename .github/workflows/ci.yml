@@ -5,12 +5,61 @@ on:
   pull_request:
 
 jobs:
-  linux:
+  linux-x86:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v3
     - uses: messense/maturin-action@v1
       with:
+        target: x86_64
+        manylinux: auto
+        command: build
+        args: '--release -i 3.7 3.8 3.9 3.10 --sdist -o dist'
+    - name: Upload wheels
+      uses: actions/upload-artifact@v2
+      with:
+        name: wheels
+        path: dist
+
+  linux-i686:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v3
+    - uses: messense/maturin-action@v1
+      with:
+        target: i686
+        manylinux: auto
+        command: build
+        args: '--release -i 3.7 3.8 3.9 3.10 --sdist -o dist'
+    - name: Upload wheels
+      uses: actions/upload-artifact@v2
+      with:
+        name: wheels
+        path: dist
+
+  linux-armv7:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v3
+    - uses: messense/maturin-action@v1
+      with:
+        target: armv7
+        manylinux: auto
+        command: build
+        args: '--release -i 3.7 3.8 3.9 3.10 --sdist -o dist'
+    - name: Upload wheels
+      uses: actions/upload-artifact@v2
+      with:
+        name: wheels
+        path: dist
+
+  linux-aarch64:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v3
+    - uses: messense/maturin-action@v1
+      with:
+        target: aarch64
         manylinux: auto
         command: build
         args: '--release -i 3.7 3.8 3.9 3.10 --sdist -o dist'
