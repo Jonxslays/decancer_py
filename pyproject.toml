@@ -1,7 +1,7 @@
 [project]
 name = "decancer_py"
 requires-python = ">=3.7,<3.11"
-description = "Python bindings for the Rust crate - decancer."
+description = "Python bindings for decancer."
 classifiers = [
     "Programming Language :: Rust",
     "Programming Language :: Python :: Implementation :: CPython",
@@ -12,7 +12,7 @@ classifiers = [
 name = "decancer_py"
 version = "0.1.0"
 authors = ["Jonxslays"]
-description = "Python bindings for the Rust crate - decancer."
+description = "Python bindings for decancer."
 
 [tool.poetry.dependencies]
 python = ">=3.7,<3.11"
