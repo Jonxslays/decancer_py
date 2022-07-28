@@ -7,7 +7,7 @@ Python bindings for [decancer](https://github.com/null8626/decancer).
 You can get started with decancer_py by installing from PyPI:
 
 ```bash
-pip install -U decancer_py
+pip install -U decancer-py
 ```
 
 ## Usage
