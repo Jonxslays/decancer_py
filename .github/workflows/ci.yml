@@ -5,7 +5,34 @@ on:
   pull_request:
 
 jobs:
+  test:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, macos-latest, windows-latest]
+        python-version: ["3.7", "3.8", "3.9", "3.10"]
+    runs-on: ${{ matrix.os }}
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Install python ${{ matrix.python-version }}
+        uses: actions/setup-python@v2
+        with:
+          python-version: ${{ matrix.python-version }}
+
+      - name: Install poetry
+        uses: Gr1N/setup-poetry@v7
+
+      - name: Run test
+        run: |
+          pip install -U pip
+          poetry install -q
+          poetry run nox -s tests
+
   linux-x86:
+    needs: test
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v3
@@ -22,6 +49,7 @@ jobs:
         path: dist
 
   linux-i686:
+    needs: test
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v3
@@ -38,6 +66,7 @@ jobs:
         path: dist
 
   linux-armv7:
+    needs: test
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v3
@@ -54,6 +83,7 @@ jobs:
         path: dist
 
   linux-aarch64:
+    needs: test
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v3
@@ -70,6 +100,7 @@ jobs:
         path: dist
 
   windows:
+    needs: test
     runs-on: windows-latest
     steps:
     - uses: actions/checkout@v3
@@ -84,6 +115,7 @@ jobs:
         path: dist
 
   macos:
+    needs: test
     runs-on: macos-latest
     steps:
     - uses: actions/checkout@v3
@@ -101,7 +133,7 @@ jobs:
     name: Release
     runs-on: ubuntu-latest
     if: ${{ github.event_name == 'release' && github.event.action == 'published' }}
-    needs: [ macos, windows, linux-x86, linux-i686, linux-armv7, linux-aarch64 ]
+    needs: [ macos, windows, linux-x86, linux-i686, linux-armv7, linux-aarch64, test ]
     steps:
       - uses: actions/download-artifact@v2
         with:
