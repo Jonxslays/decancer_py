@@ -12,8 +12,12 @@ pub fn parse(text: String) -> String {
 
 /// Check whether some string contains some text.
 #[pyfunction]
-#[pyo3(text_signature = "(string: str, text: str) -> bool")]
-pub fn contains(string: String, text: String) -> bool {
+#[pyo3(text_signature = "(string: str, text: str, parse: bool = True) -> bool")]
+pub fn contains(mut string: String, text: String, parse: Option<bool>) -> bool {
+    if parse.unwrap_or(true) {
+        string = BRIDGE.cure(&string)
+    }
+
     BRIDGE.contains(&string, &text)
 }
 
