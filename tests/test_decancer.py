@@ -5,7 +5,7 @@ YEET = "𝔂ＥＥ𝓣"
 
 def test_contains() -> None:
     assert contains(YEET, "ye")
-    assert contains(YEET, "ye")
+    assert not contains(YEET, "no")
 
 
 def test_contains_when_parse_is_false() -> None:
