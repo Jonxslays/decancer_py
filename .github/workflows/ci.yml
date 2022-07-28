@@ -58,7 +58,7 @@ jobs:
         target: i686
         manylinux: auto
         command: build
-        args: '--release -i 3.7 3.8 3.9 3.10 --sdist -o dist'
+        args: '--release -i 3.7 3.8 3.9 3.10 -o dist'
     - name: Upload wheels
       uses: actions/upload-artifact@v2
       with:
@@ -75,7 +75,7 @@ jobs:
         target: armv7
         manylinux: auto
         command: build
-        args: '--release -i 3.7 3.8 3.9 3.10 --sdist -o dist'
+        args: '--release -i 3.7 3.8 3.9 3.10 -o dist'
     - name: Upload wheels
       uses: actions/upload-artifact@v2
       with:
@@ -92,7 +92,7 @@ jobs:
         target: aarch64
         manylinux: auto
         command: build
-        args: '--release -i 3.7 3.8 3.9 3.10 --sdist -o dist'
+        args: '--release -i 3.7 3.8 3.9 3.10 -o dist'
     - name: Upload wheels
       uses: actions/upload-artifact@v2
       with:
