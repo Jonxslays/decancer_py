@@ -3,6 +3,8 @@ name: CI
 on:
   push:
   pull_request:
+  release:
+    types: [published]
 
 jobs:
   test-rust:
@@ -54,110 +56,138 @@ jobs:
   linux-x86:
     needs: test-python
     runs-on: ubuntu-latest
+
     steps:
-    - uses: actions/checkout@v3
-    - uses: messense/maturin-action@v1
-      with:
-        target: x86_64
-        manylinux: auto
-        command: build
-        args: '--release -i 3.7 3.8 3.9 3.10 --sdist -o dist'
-    - name: Upload wheels
-      uses: actions/upload-artifact@v2
-      with:
-        name: wheels
-        path: dist
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Build wheels
+        uses: messense/maturin-action@v1
+        with:
+          target: x86_64
+          manylinux: auto
+          command: build
+          args: '--release -i 3.7 3.8 3.9 3.10 --sdist -o dist'
+
+      - name: Upload wheels
+        uses: actions/upload-artifact@v2
+        with:
+          name: wheels
+          path: dist
 
   linux-i686:
     needs: test-python
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v3
-    - uses: messense/maturin-action@v1
-      with:
-        target: i686
-        manylinux: auto
-        command: build
-        args: '--release -i 3.7 3.8 3.9 3.10 -o dist'
-    - name: Upload wheels
-      uses: actions/upload-artifact@v2
-      with:
-        name: wheels
-        path: dist
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Build wheels
+        uses: messense/maturin-action@v1
+        with:
+          target: i686
+          manylinux: auto
+          command: build
+          args: '--release -i 3.7 3.8 3.9 3.10 -o dist'
+
+      - name: Upload wheels
+        uses: actions/upload-artifact@v2
+        with:
+          name: wheels
+          path: dist
 
   linux-armv7:
     needs: test-python
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v3
-    - uses: messense/maturin-action@v1
-      with:
-        target: armv7
-        manylinux: auto
-        command: build
-        args: '--release -i 3.7 3.8 3.9 3.10 -o dist'
-    - name: Upload wheels
-      uses: actions/upload-artifact@v2
-      with:
-        name: wheels
-        path: dist
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Build wheels
+        uses: messense/maturin-action@v1
+        with:
+          target: armv7
+          manylinux: auto
+          command: build
+          args: '--release -i 3.7 3.8 3.9 3.10 -o dist'
+
+      - name: Upload wheels
+        uses: actions/upload-artifact@v2
+        with:
+          name: wheels
+          path: dist
 
   linux-aarch64:
     needs: test-python
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v3
-    - uses: messense/maturin-action@v1
-      with:
-        target: aarch64
-        manylinux: auto
-        command: build
-        args: '--release -i 3.7 3.8 3.9 3.10 -o dist'
-    - name: Upload wheels
-      uses: actions/upload-artifact@v2
-      with:
-        name: wheels
-        path: dist
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Build wheels
+        uses: messense/maturin-action@v1
+        with:
+          target: aarch64
+          manylinux: auto
+          command: build
+          args: '--release -i 3.7 3.8 3.9 3.10 -o dist'
+
+      - name: Upload wheels
+        uses: actions/upload-artifact@v2
+        with:
+          name: wheels
+          path: dist
 
   windows:
     needs: test-python
     runs-on: windows-latest
     steps:
-    - uses: actions/checkout@v3
-    - uses: messense/maturin-action@v1
-      with:
-        command: build
-        args: '--release -i 3.7 3.8 3.9 3.10 -o dist'
-    - name: Upload wheels
-      uses: actions/upload-artifact@v2
-      with:
-        name: wheels
-        path: dist
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Build wheels
+        uses: messense/maturin-action@v1
+        with:
+          command: build
+          args: '--release -i 3.7 3.8 3.9 3.10 -o dist'
+
+      - name: Upload wheels
+        uses: actions/upload-artifact@v2
+        with:
+          name: wheels
+          path: dist
 
   macos:
     needs: test-python
     runs-on: macos-latest
     steps:
-    - uses: actions/checkout@v3
-    - uses: messense/maturin-action@v1
-      with:
-        command: build
-        args: '--release -i 3.7 3.8 3.9 3.10 -o dist --universal2'
-    - name: Upload wheels
-      uses: actions/upload-artifact@v2
-      with:
-        name: wheels
-        path: dist
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Build wheels
+        uses: messense/maturin-action@v1
+        with:
+          command: build
+          args: '--release -i 3.7 3.8 3.9 3.10 -o dist --universal2'
+
+      - name: Upload wheels
+        uses: actions/upload-artifact@v2
+        with:
+          name: wheels
+          path: dist
 
   release:
     name: Release
     runs-on: ubuntu-latest
     if: ${{ github.event_name == 'release' && github.event.action == 'published' }}
     needs: [macos, windows, linux-x86, linux-i686, linux-armv7, linux-aarch64, test-python]
+
     steps:
-      - uses: actions/download-artifact@v2
+      - name: Download artifacts
+        uses: actions/download-artifact@v2
         with:
           name: wheels
+
       - name: Publish to PyPI
         uses: messense/maturin-action@v1
         env:
