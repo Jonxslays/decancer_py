@@ -15,37 +15,25 @@ pip install -U decancer-py
 decancer_py can be used to turn sketchy text strings into their more
 basic counterparts.
 
-Two functions are exported from decancer_py:
-- `parse` - Parse a jank string to a normal string.
-- `contains` - Check if some string contains some other string.
-
-The `contains` API is altered a bit from the decancer crate.
-
-The result from `parse` will always be in ALL LOWERCASE.
-
-By default `contains` will attempt to parse the string and then see if
-the string is contained. Pass `parse=False` to skip the parsing step.
-
-To be clear, using `"s" in "string"` is going to be more performant than
-calling `contains` due to the overhead of the FFI. The main use case is
-if you want to check if some regular string is in some jank string.
+Only one function is exported from decancer_py:
+- `parse` - Parse a jank string to a normal string wrapped in a `CuredString` object.
 
 ```py
 from decancer_py import parse
 
-
 parsed = parse("𝔂ＥＥ𝓣")
+
 assert parsed == "yeet"
+assert parsed.starts_with("ye")
+assert parsed.ends_with("et")
+assert parsed.contains("ee")
+
+# turn it into an ordinary python str
+
+parsed_as_str = str(parsed)
+print(parsed_as_str)
 ```
 
-```py
-from decancer_py import contains
-
-
-assert contains("yeet", "ye")
-assert contains("𝔂ＥＥ𝓣", "ye")
-assert not contains("𝔂ＥＥ𝓣", "ye", parse=False)
-```
 
 ## License
 
