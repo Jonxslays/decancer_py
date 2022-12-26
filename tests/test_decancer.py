@@ -1,4 +1,4 @@
-from decancer_py import parse, contains
+from decancer_py import parse, contains, starts_with, ends_with
 
 YEET = "𝔂ＥＥ𝓣"
 
@@ -8,9 +8,14 @@ def test_contains() -> None:
     assert not contains(YEET, "no")
 
 
-def test_contains_when_parse_is_false() -> None:
-    assert contains("yeet", "ye", parse=False)
-    assert not contains(YEET, "ye", parse=False)
+def test_starts_with() -> None:
+    assert starts_with(YEET, "ye")
+    assert not starts_with(YEET, "et")
+
+
+def test_ends_with() -> None:
+    assert not ends_with(YEET, "ye")
+    assert ends_with(YEET, "et")
 
 
 def test_parse() -> None:
