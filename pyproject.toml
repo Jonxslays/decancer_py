@@ -5,7 +5,7 @@ description = "Python bindings for decancer."
 authors = [{ name = "Jonxslays" }]
 license = { file = "LICENSE" }
 readme = "README.md"
-version = "0.2.0"
+version = "0.2.1"
 classifiers = [
     "License :: OSI Approved :: MIT License",
     "Programming Language :: Rust",
@@ -24,7 +24,7 @@ strip = true
 
 [tool.poetry]
 name = "decancer_py"
-version = "0.2.0"
+version = "0.2.1"
 authors = ["Jonxslays"]
 description = "Python bindings for decancer."
 
