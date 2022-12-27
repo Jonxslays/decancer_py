@@ -12,7 +12,7 @@ jobs:
       fail-fast: false
       matrix:
         os: [ubuntu-latest, macos-latest, windows-latest]
-        python-version: ["3.7", "3.8", "3.9", "3.10"]
+        python-version: ["3.7", "3.8", "3.9", "3.10", "3.11"]
     runs-on: ${{ matrix.os }}
 
     steps:
@@ -47,7 +47,7 @@ jobs:
           target: x86_64
           manylinux: auto
           command: build
-          args: '--release -i 3.7 3.8 3.9 3.10 --sdist -o dist'
+          args: "--release -i 3.7 3.8 3.9 3.10 3.11 --sdist -o dist"
 
       - name: Upload wheels
         uses: actions/upload-artifact@v2
@@ -68,7 +68,7 @@ jobs:
           target: i686
           manylinux: auto
           command: build
-          args: '--release -i 3.7 3.8 3.9 3.10 -o dist'
+          args: "--release -i 3.7 3.8 3.9 3.10 3.11 -o dist"
 
       - name: Upload wheels
         uses: actions/upload-artifact@v2
@@ -89,7 +89,7 @@ jobs:
           target: armv7
           manylinux: auto
           command: build
-          args: '--release -i 3.7 3.8 3.9 3.10 -o dist'
+          args: "--release -i 3.7 3.8 3.9 3.10 3.11 -o dist"
 
       - name: Upload wheels
         uses: actions/upload-artifact@v2
@@ -110,7 +110,7 @@ jobs:
           target: aarch64
           manylinux: auto
           command: build
-          args: '--release -i 3.7 3.8 3.9 3.10 -o dist'
+          args: "--release -i 3.7 3.8 3.9 3.10 3.11 -o dist"
 
       - name: Upload wheels
         uses: actions/upload-artifact@v2
@@ -129,7 +129,7 @@ jobs:
         uses: messense/maturin-action@v1
         with:
           command: build
-          args: '--release -i 3.7 3.8 3.9 3.10 -o dist'
+          args: "--release -i 3.7 3.8 3.9 3.10 3.11 -o dist"
 
       - name: Upload wheels
         uses: actions/upload-artifact@v2
@@ -148,7 +148,7 @@ jobs:
         uses: messense/maturin-action@v1
         with:
           command: build
-          args: '--release -i 3.7 3.8 3.9 3.10 -o dist --universal2'
+          args: "--release -i 3.7 3.8 3.9 3.10 3.11 -o dist --universal2"
 
       - name: Upload wheels
         uses: actions/upload-artifact@v2
@@ -160,7 +160,16 @@ jobs:
     name: Release
     runs-on: ubuntu-latest
     if: ${{ github.event_name == 'release' && github.event.action == 'published' }}
-    needs: [macos, windows, linux-x86, linux-i686, linux-armv7, linux-aarch64, test-python]
+    needs:
+      [
+        macos,
+        windows,
+        linux-x86,
+        linux-i686,
+        linux-armv7,
+        linux-aarch64,
+        test-python,
+      ]
 
     steps:
       - name: Download artifacts
