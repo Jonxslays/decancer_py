@@ -1,26 +1,52 @@
 from __future__ import annotations
 
-__all__ = ("contains", "parse")
+__all__ = ("parse", "CuredString", "__version__")
+__version__: str
 
+class CuredString:
+    """A small wrapper around a string used for comparisons."""
 
-def contains(string: str, text: str, parse: bool = True) -> bool:
-    """Check whether some string contains some text.
+    def __eq__(self, other: str) -> bool: ...
+    def __ne__(self, other: str) -> bool: ...
+    def __contains__(self, other: str) -> bool: ...
+    def __bool__(self) -> bool: ...
+    def __str__(self) -> bool: ...
+    def __repr__(self) -> bool: ...
+    def starts_with(self, other: str) -> bool:
+        """Checks if this cured string starts with the other string.
+
+        Args:
+            other: The other string to compare against.
+
+        Returns:
+            True if the cured string starts with the other string, else False.
+        """
+    def ends_with(self, other: str) -> bool:
+        """Checks if this cured string ends with the other string.
+
+        Args:
+            other: The other string to compare against.
+
+        Returns:
+            True if the cured string ends with the other string, else False.
+        """
+    def contains(self, other: str) -> bool:
+        """Checks if this cured string contains the other string.
+
+        Args:
+            other: The other string to compare against.
+
+        Returns:
+            True if the cured string contains the other string, else False.
+        """
+
+def parse(text: str) -> CuredString:
+    """Parses a jank string into a less toxic string wrapped in a CuredString
+    object.
 
     Args:
-        string (`str`): The string to search through
-        text (`str`): The text to check for
-        parse (`bool`): If True, parse the string first
-            Defaults to True
+        text: The text to parse.
 
     Returns:
-        `bool` - True if the text is contained in the string
-    """
-def parse(text: str) -> str:
-    """Parses a jank string into a less toxic lowercase string.
-
-    Args:
-        text (`str`): The text to parse
-
-    Returns:
-        `str` - The parsed string in all lowercase
+        The CuredString object to use for comparisons.
     """
