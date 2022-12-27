@@ -17,15 +17,15 @@ jobs:
 
     steps:
       - name: Checkout code
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
 
       - name: Install python ${{ matrix.python-version }}
-        uses: actions/setup-python@v2
+        uses: actions/setup-python@v4
         with:
           python-version: ${{ matrix.python-version }}
 
       - name: Install poetry
-        uses: Gr1N/setup-poetry@v7
+        uses: Gr1N/setup-poetry@v8
 
       - name: Run test
         run: |
@@ -50,7 +50,7 @@ jobs:
           args: "--release -i 3.7 3.8 3.9 3.10 3.11 --sdist -o dist"
 
       - name: Upload wheels
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         with:
           name: wheels
           path: dist
@@ -71,7 +71,7 @@ jobs:
           args: "--release -i 3.7 3.8 3.9 3.10 3.11 -o dist"
 
       - name: Upload wheels
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         with:
           name: wheels
           path: dist
@@ -92,7 +92,7 @@ jobs:
           args: "--release -i 3.7 3.8 3.9 3.10 3.11 -o dist"
 
       - name: Upload wheels
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         with:
           name: wheels
           path: dist
@@ -113,7 +113,7 @@ jobs:
           args: "--release -i 3.7 3.8 3.9 3.10 3.11 -o dist"
 
       - name: Upload wheels
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         with:
           name: wheels
           path: dist
@@ -132,7 +132,7 @@ jobs:
           args: "--release -i 3.7 3.8 3.9 3.10 3.11 -o dist"
 
       - name: Upload wheels
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         with:
           name: wheels
           path: dist
@@ -151,7 +151,7 @@ jobs:
           args: "--release -i 3.7 3.8 3.9 3.10 3.11 -o dist --universal2"
 
       - name: Upload wheels
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         with:
           name: wheels
           path: dist
@@ -173,7 +173,7 @@ jobs:
 
     steps:
       - name: Download artifacts
-        uses: actions/download-artifact@v2
+        uses: actions/download-artifact@v3
         with:
           name: wheels
 
