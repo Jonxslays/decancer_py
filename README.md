@@ -15,9 +15,10 @@ pip install -U decancer-py
 `decancer_py` can be used to turn sketchy text strings into their more
 basic counterparts.
 
-Only one function is exported from `decancer_py`:
+A single function and class are exported from `decancer_py`:
 
-- `parse` - Parse a jank string to a normal string wrapped in a `CuredString` object.
+- `CuredString` - A wrapper around a string object that can be used for comparisons.
+- `parse` - Parse a jank string into a normal string wrapped in a `CuredString` object.
 
 ```py
 from decancer_py import parse, CuredString
@@ -31,7 +32,7 @@ assert parsed.ends_with("et")
 assert parsed.starts_with("ye")
 
 # Implicit string conversion
-print(parsed_as_str)
+print(parsed)
 # yeet
 ```
 
