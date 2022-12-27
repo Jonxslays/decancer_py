@@ -38,5 +38,5 @@ nox = "~=2022.11.21"
 pytest = "~=7.2.0"
 
 [build-system]
-requires = ["maturin>=0.13,<0.14"]
+requires = ["maturin>=0.14,<0.15"]
 build-backend = "maturin"
