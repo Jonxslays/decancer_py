@@ -26,7 +26,6 @@ impl CuredString {
         self.0.contains(other)
     }
 
-    /// Checks if this string is similar to another string.
     fn __richcmp__(&self, other: &str, op: CompareOp) -> PyResult<bool> {
         match op {
             CompareOp::Eq => Ok(self.0 == other),
@@ -35,19 +34,20 @@ impl CuredString {
         }
     }
 
-    /// Checks if this object is not empty. (truthy)
-    fn __bool__(&self) -> bool {
-        self.0.len() > 0
+    fn __contains__(&self, other: &str) -> PyResult<bool> {
+        Ok(self.contains(other))
     }
 
-    /// Coerces this object as a python `str`.
+    fn __bool__(&self) -> PyResult<bool> {
+        Ok(self.0.len() > 0)
+    }
+
     fn __str__(&self) -> PyResult<&str> {
         Ok(&self.0)
     }
 
-    /// Represents this object.
     fn __repr__(&self) -> PyResult<String> {
-        Ok(format!("CuredString<\"{}\">", &self.0))
+        Ok(format!("CuredString(\"{}\")", &self.0))
     }
 }
 
