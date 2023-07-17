@@ -5,7 +5,7 @@ description = "Python bindings for decancer."
 authors = [{ name = "Jonxslays" }]
 license = { file = "LICENSE" }
 readme = "README.md"
-version = "0.2.1"
+version = "0.2.2"
 classifiers = [
     "License :: OSI Approved :: MIT License",
     "Programming Language :: Rust",
@@ -24,7 +24,7 @@ strip = true
 
 [tool.poetry]
 name = "decancer_py"
-version = "0.2.1"
+version = "0.2.2"
 authors = ["Jonxslays"]
 description = "Python bindings for decancer."
 
@@ -32,11 +32,11 @@ description = "Python bindings for decancer."
 python = ">=3.7,<3.12"
 
 [tool.poetry.group.dev.dependencies]
-black = "~=22.12.0"
-maturin = "0.14.7"
-nox = "~=2022.11.21"
-pytest = "~=7.2.0"
+black = { version = "~=23.7.0", python = ">=3.8"}
+maturin = "~=1.1.0"
+nox = "~=2023.4.22"
+pytest = "~=7.4.0"
 
 [build-system]
-requires = ["maturin>=0.14,<0.15"]
+requires = ["maturin~=1.1.0"]
 build-backend = "maturin"
