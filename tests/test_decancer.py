@@ -9,12 +9,6 @@ def test_contains() -> None:
     assert YEET.contains("ee")
     assert not YEET.contains("no")
 
-
-def est_contains_invalid_type() -> None:
-    with pytest.raises(TypeError):
-        YEET.contains(69)  # type: ignore
-
-
 def test_starts_with() -> None:
     assert YEET.starts_with("ye")
     assert not YEET.starts_with("et")
