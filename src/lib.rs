@@ -27,11 +27,11 @@ impl CuredString {
     }
 
     fn __richcmp__(&self, other: &str, op: CompareOp) -> PyResult<bool> {
-        match op {
-            CompareOp::Eq => Ok(self.0 == other),
-            CompareOp::Ne => Ok(self.0 != other),
-            _ => Ok(false),
-        }
+        Ok(match op {
+            CompareOp::Eq => self.0 == other,
+            CompareOp::Ne => self.0 != other,
+            _ => false,
+        })
     }
 
     fn __contains__(&self, other: &str) -> PyResult<bool> {
@@ -39,7 +39,7 @@ impl CuredString {
     }
 
     fn __bool__(&self) -> PyResult<bool> {
-        Ok(self.0.len() > 0)
+        Ok(!self.0.is_empty())
     }
 
     fn __str__(&self) -> PyResult<&str> {
@@ -47,7 +47,7 @@ impl CuredString {
     }
 
     fn __repr__(&self) -> PyResult<String> {
-        Ok(format!("CuredString(\"{}\")", &self.0))
+        Ok(format!("{:?}", self.0))
     }
 }
 
@@ -64,7 +64,5 @@ fn decancer_py(_py: Python, m: &PyModule) -> PyResult<()> {
     m.add("__version__", std::env!("CARGO_PKG_VERSION"))?;
 
     m.add_class::<CuredString>()?;
-    m.add_function(wrap_pyfunction!(parse, m)?)?;
-
-    Ok(())
+    m.add_function(wrap_pyfunction!(parse, m)?)
 }

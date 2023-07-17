@@ -1,0 +1,5 @@
+prune .github
+prune tests
+exclude .gitignore
+exclude Cargo.lock
+exclude rustfmt.toml
