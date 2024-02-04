@@ -1,7 +1,7 @@
 [package]
 name = "decancer_py"
 description = "Python bindings for decancer."
-version = "0.2.2"
+version = "0.3.0"
 edition = "2021"
 authors = ["Jonxslays"]
 license = "MIT"
@@ -18,7 +18,7 @@ crate-type = ["cdylib"]
 
 [dependencies]
 # Sweet lib that does all the work for us
-decancer = "1.6.4"
+decancer = "2.0.1"
 
 # The most beautiful bindings in existence
 pyo3 = { version = "0.16.5", features = ["extension-module"] }

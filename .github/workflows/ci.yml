@@ -2,6 +2,8 @@ name: CI
 
 on:
   push:
+    branches:
+      - "master"
   pull_request:
   release:
     types: [published]
@@ -12,7 +14,7 @@ jobs:
       fail-fast: false
       matrix:
         os: [ubuntu-latest, macos-latest, windows-latest]
-        python-version: ["3.7", "3.8", "3.9", "3.10", "3.11"]
+        python-version: ["3.8", "3.9", "3.10", "3.11", "3.12"]
     runs-on: ${{ matrix.os }}
 
     steps:
@@ -47,7 +49,7 @@ jobs:
           target: x86_64
           manylinux: auto
           command: build
-          args: "--release -i 3.7 3.8 3.9 3.10 3.11 --sdist -o dist"
+          args: "--release -i 3.8 3.9 3.10 3.11 3.12 --sdist -o dist"
 
       - name: Upload wheels
         uses: actions/upload-artifact@v3
@@ -68,7 +70,7 @@ jobs:
           target: i686
           manylinux: auto
           command: build
-          args: "--release -i 3.7 3.8 3.9 3.10 3.11 -o dist"
+          args: "--release -i 3.8 3.9 3.10 3.11 3.12 -o dist"
 
       - name: Upload wheels
         uses: actions/upload-artifact@v3
@@ -89,7 +91,7 @@ jobs:
           target: armv7
           manylinux: auto
           command: build
-          args: "--release -i 3.7 3.8 3.9 3.10 3.11 -o dist"
+          args: "--release -i 3.8 3.9 3.10 3.11 3.12 -o dist"
 
       - name: Upload wheels
         uses: actions/upload-artifact@v3
@@ -110,7 +112,7 @@ jobs:
           target: aarch64
           manylinux: auto
           command: build
-          args: "--release -i 3.7 3.8 3.9 3.10 3.11 -o dist"
+          args: "--release -i 3.8 3.9 3.10 3.11 3.12 -o dist"
 
       - name: Upload wheels
         uses: actions/upload-artifact@v3
@@ -129,7 +131,7 @@ jobs:
         uses: messense/maturin-action@v1
         with:
           command: build
-          args: "--release -i 3.7 3.8 3.9 3.10 3.11 -o dist"
+          args: "--release -i 3.8 3.9 3.10 3.11 3.12 -o dist"
 
       - name: Upload wheels
         uses: actions/upload-artifact@v3
@@ -148,7 +150,7 @@ jobs:
         uses: messense/maturin-action@v1
         with:
           command: build
-          args: "--release -i 3.7 3.8 3.9 3.10 3.11 -o dist --target universal2-apple-darwin"
+          args: "--release -i 3.8 3.9 3.10 3.11 3.12 -o dist --target universal2-apple-darwin"
 
       - name: Upload wheels
         uses: actions/upload-artifact@v3
