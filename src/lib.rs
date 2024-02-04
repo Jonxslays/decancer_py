@@ -54,8 +54,13 @@ impl CuredString {
 /// Parses a jank string into a less toxic lowercase string wrapped in CuredString object.
 #[pyfunction]
 #[pyo3(text_signature = "(text: str) -> CuredString")]
-pub fn parse(text: String) -> CuredString {
-    CuredString(decancer::cure(&text))
+pub fn parse<'a>(text: String) -> PyResult<CuredString> {
+    match decancer::cure(&text) {
+        Ok(res) => Ok(CuredString(res)),
+        Err(err) => Err(Python::with_gil(|_| {
+            pyo3::exceptions::PyRuntimeError::new_err(err.to_string())
+        })),
+    }
 }
 
 /// The module we export to python
