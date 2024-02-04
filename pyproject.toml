@@ -24,7 +24,7 @@ strip = true
 
 [tool.poetry]
 name = "decancer_py"
-version = "0.2.2"
+version = "0.3.0"
 authors = ["Jonxslays"]
 description = "Python bindings for decancer."
 
