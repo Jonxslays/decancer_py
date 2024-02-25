@@ -21,4 +21,4 @@ crate-type = ["cdylib"]
 decancer = "2.0.1"
 
 # The most beautiful bindings in existence
-pyo3 = { version = "0.16.5", features = ["extension-module"] }
+pyo3 = { version = "0.20.3", features = ["extension-module"] }
