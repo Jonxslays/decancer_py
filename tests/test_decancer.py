@@ -9,6 +9,7 @@ def test_contains() -> None:
     assert YEET.contains("ee")
     assert not YEET.contains("no")
 
+
 def test_starts_with() -> None:
     assert YEET.starts_with("ye")
     assert not YEET.starts_with("et")
@@ -47,3 +48,15 @@ def test_dunder_contains() -> None:
 def test_dunder_contains_invalid_type() -> None:
     with pytest.raises(TypeError):
         69 in YEET  # type: ignore
+
+
+def test_chinese() -> None:
+    result = parse("旧")
+
+    assert result == "18"
+
+
+def test_retain_chinese() -> None:
+    result = parse("旧", retain_chinese=True)
+
+    assert result == "旧"
