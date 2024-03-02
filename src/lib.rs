@@ -1,6 +1,7 @@
 extern crate decancer;
 
-use pyo3::{basic::CompareOp, prelude::*};
+use decancer::Options;
+use pyo3::{basic::CompareOp, exceptions::PyRuntimeError, prelude::*, types::PyDict};
 
 /// A small wrapper around the str datatype used for comparison reasons.
 #[pyclass]
@@ -51,14 +52,83 @@ impl CuredString {
     }
 }
 
+fn is_dict_key(dict: &PyDict, key: &'static str) -> bool {
+    if let Ok(Some(value)) = dict.get_item(key) {
+        return matches!(value.is_true(), Ok(true));
+    }
+
+    false
+}
+
+macro_rules! options_override {
+    ($dict:ident,$output:ident,$($option:ident),*) => {
+        $(
+            if is_dict_key($dict, stringify!($output)) {
+                $output = decancer::Options::$option();
+            }
+        )*
+    };
+}
+
+macro_rules! options {
+    ($dict:ident,$output:ident,$($option:ident),*) => {
+        $(
+            if is_dict_key($dict, stringify!($output)) {
+                $output = $output.$option();
+            }
+        )*
+    };
+}
+
+fn kwargs_to_options(options: Option<&PyDict>) -> Options {
+    match options {
+        Some(dict) => {
+            let mut output = Options::default();
+
+            options_override!(dict, output, formatter, pure_homoglyph);
+
+            options!(
+                dict,
+                output,
+                retain_capitalization,
+                disable_bidi,
+                retain_diacritics,
+                retain_japanese,
+                retain_emojis,
+                retain_greek,
+                retain_cyrillic,
+                retain_hebrew,
+                retain_arabic,
+                retain_devanagari,
+                retain_bengali,
+                retain_armenian,
+                retain_gujarati,
+                retain_tamil,
+                retain_thai,
+                retain_lao,
+                retain_burmese,
+                retain_khmer,
+                retain_mongolian,
+                retain_chinese,
+                retain_korean,
+                retain_braille
+            );
+
+            output
+        }
+
+        None => Options::default(),
+    }
+}
+
 /// Parses a jank string into a less toxic lowercase string wrapped in CuredString object.
 #[pyfunction]
-#[pyo3(text_signature = "(text: str) -> CuredString")]
-pub fn parse<'a>(text: String) -> PyResult<CuredString> {
-    match decancer::cure(&text) {
+#[pyo3(text_signature = "(text: str, **options) -> CuredString")]
+pub fn parse<'a>(text: String, options: Option<&PyDict>) -> PyResult<CuredString> {
+    match decancer::cure(&text, kwargs_to_options(options)) {
         Ok(res) => Ok(CuredString(res)),
         Err(err) => Err(Python::with_gil(|_| {
-            pyo3::exceptions::PyRuntimeError::new_err(err.to_string())
+            PyRuntimeError::new_err(err.to_string())
         })),
     }
 }
