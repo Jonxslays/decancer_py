@@ -27,28 +27,28 @@ impl CuredString {
         self.0.contains(other)
     }
 
-    fn __richcmp__(&self, other: &str, op: CompareOp) -> PyResult<bool> {
-        Ok(match op {
+    fn __richcmp__(&self, other: &str, op: CompareOp) -> bool {
+        match op {
             CompareOp::Eq => self.0 == other,
             CompareOp::Ne => self.0 != other,
             _ => false,
-        })
+        }
     }
 
-    fn __contains__(&self, other: &str) -> PyResult<bool> {
-        Ok(self.contains(other))
+    fn __contains__(&self, other: &str) -> bool {
+        self.contains(other)
     }
 
-    fn __bool__(&self) -> PyResult<bool> {
-        Ok(!self.0.is_empty())
+    fn __bool__(&self) -> bool {
+        !self.0.is_empty()
     }
 
-    fn __str__(&self) -> PyResult<&str> {
-        Ok(&self.0)
+    fn __str__(&self) -> &str {
+        &self.0
     }
 
-    fn __repr__(&self) -> PyResult<String> {
-        Ok(format!("{:?}", self.0))
+    fn __repr__(&self) -> String {
+        format!("{:?}", self.0)
     }
 }
 
@@ -61,19 +61,19 @@ fn is_dict_key(dict: &PyDict, key: &'static str) -> bool {
 }
 
 macro_rules! options_override {
-    ($dict:ident,$output:ident,$($option:ident),*) => {
+    ($dict:ident, $output:ident, $($option:ident),*) => {
         $(
-            if is_dict_key($dict, stringify!($output)) {
-                $output = decancer::Options::$option();
+            if $crate::is_dict_key($dict, ::std::stringify!($output)) {
+                $output = $crate::decancer::Options::$option();
             }
         )*
     };
 }
 
 macro_rules! options {
-    ($dict:ident,$output:ident,$($option:ident),*) => {
+    ($dict:ident, $output:ident, $($option:ident),*) => {
         $(
-            if is_dict_key($dict, stringify!($output)) {
+            if $crate::is_dict_key($dict, ::std::stringify!($output)) {
                 $output = $output.$option();
             }
         )*
@@ -81,15 +81,16 @@ macro_rules! options {
 }
 
 fn kwargs_to_options(options: Option<&PyDict>) -> Options {
-    match options {
-        Some(dict) => {
-            let mut output = Options::default();
+    let mut result = Options::default();
 
-            options_override!(dict, output, formatter, pure_homoglyph);
+    match options {
+        None => result,
+        Some(dict) => {
+            options_override!(dict, result, formatter, pure_homoglyph);
 
             options!(
                 dict,
-                output,
+                result,
                 retain_capitalization,
                 disable_bidi,
                 retain_diacritics,
@@ -114,15 +115,14 @@ fn kwargs_to_options(options: Option<&PyDict>) -> Options {
                 retain_braille
             );
 
-            output
+            result
         }
-
-        None => Options::default(),
     }
 }
 
 /// Parses a jank string into a less toxic lowercase string wrapped in CuredString object.
 #[pyfunction]
+#[pyo3(signature = (text, **options))]
 #[pyo3(text_signature = "(text: str, **options) -> CuredString")]
 pub fn parse<'a>(text: String, options: Option<&PyDict>) -> PyResult<CuredString> {
     match decancer::cure(&text, kwargs_to_options(options)) {
@@ -136,8 +136,7 @@ pub fn parse<'a>(text: String, options: Option<&PyDict>) -> PyResult<CuredString
 /// The module we export to python
 #[pymodule]
 fn decancer_py(_py: Python, m: &PyModule) -> PyResult<()> {
-    m.add("__version__", std::env!("CARGO_PKG_VERSION"))?;
-
     m.add_class::<CuredString>()?;
-    m.add_function(wrap_pyfunction!(parse, m)?)
+    m.add_function(wrap_pyfunction!(parse, m)?)?;
+    m.add("__version__", std::env!("CARGO_PKG_VERSION"))
 }
