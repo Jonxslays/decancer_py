@@ -52,11 +52,9 @@ def test_dunder_contains_invalid_type() -> None:
 
 def test_chinese() -> None:
     result = parse("旧")
-
     assert result == "18"
 
 
 def test_retain_chinese() -> None:
     result = parse("旧", retain_chinese=True)
-
     assert result == "旧"

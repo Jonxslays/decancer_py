@@ -60,60 +60,108 @@ fn is_dict_key(dict: &PyDict, key: &'static str) -> bool {
     false
 }
 
-macro_rules! options_override {
-    ($dict:ident, $output:ident, $($option:ident),*) => {
-        $(
-            if $crate::is_dict_key($dict, ::std::stringify!($output)) {
-                $output = $crate::decancer::Options::$option();
-            }
-        )*
-    };
-}
-
-macro_rules! options {
-    ($dict:ident, $output:ident, $($option:ident),*) => {
-        $(
-            if $crate::is_dict_key($dict, ::std::stringify!($output)) {
-                $output = $output.$option();
-            }
-        )*
-    };
-}
-
 fn kwargs_to_options(options: Option<&PyDict>) -> Options {
     let mut result = Options::default();
 
     match options {
         None => result,
         Some(dict) => {
-            options_override!(dict, result, formatter, pure_homoglyph);
+            if is_dict_key(dict, "pure_homoglyph") {
+                result = Options::pure_homoglyph();
+            }
 
-            options!(
-                dict,
-                result,
-                retain_capitalization,
-                disable_bidi,
-                retain_diacritics,
-                retain_japanese,
-                retain_emojis,
-                retain_greek,
-                retain_cyrillic,
-                retain_hebrew,
-                retain_arabic,
-                retain_devanagari,
-                retain_bengali,
-                retain_armenian,
-                retain_gujarati,
-                retain_tamil,
-                retain_thai,
-                retain_lao,
-                retain_burmese,
-                retain_khmer,
-                retain_mongolian,
-                retain_chinese,
-                retain_korean,
-                retain_braille
-            );
+            if is_dict_key(dict, "retain_capitalization") {
+                result = result.retain_capitalization();
+            }
+
+            if is_dict_key(dict, "disable_bidi") {
+                result = result.disable_bidi();
+            }
+
+            if is_dict_key(dict, "retain_diacritics") {
+                result = result.retain_diacritics();
+            }
+
+            if is_dict_key(dict, "retain_japanese") {
+                result = result.retain_japanese();
+            }
+
+            if is_dict_key(dict, "retain_emojis") {
+                result = result.retain_emojis();
+            }
+
+            if is_dict_key(dict, "retain_greek") {
+                result = result.retain_greek();
+            }
+
+            if is_dict_key(dict, "retain_cyrillic") {
+                result = result.retain_cyrillic();
+            }
+
+            if is_dict_key(dict, "retain_hebrew") {
+                result = result.retain_hebrew();
+            }
+
+            if is_dict_key(dict, "retain_arabic") {
+                result = result.retain_arabic();
+            }
+
+            if is_dict_key(dict, "retain_devanagari") {
+                result = result.retain_devanagari();
+            }
+
+
+            if is_dict_key(dict, "retain_bengali") {
+                result = result.retain_bengali();
+            }
+
+
+            if is_dict_key(dict, "retain_armenian") {
+                result = result.retain_armenian();
+            }
+
+
+            if is_dict_key(dict, "retain_gujarati") {
+                result = result.retain_gujarati();
+            }
+
+
+            if is_dict_key(dict, "retain_tamil") {
+                result = result.retain_tamil();
+            }
+
+
+            if is_dict_key(dict, "retain_thai") {
+                result = result.retain_thai();
+            }
+
+            if is_dict_key(dict, "retain_lao") {
+                result = result.retain_lao();
+            }
+
+            if is_dict_key(dict, "retain_burmese") {
+                result = result.retain_burmese();
+            }
+
+            if is_dict_key(dict, "retain_khmer") {
+                result = result.retain_khmer();
+            }
+
+            if is_dict_key(dict, "retain_mongolian") {
+                result = result.retain_mongolian();
+            }
+
+            if is_dict_key(dict, "retain_chinese") {
+                result = result.retain_chinese();
+            }
+
+            if is_dict_key(dict, "retain_korean") {
+                result = result.retain_korean();
+            }
+
+            if is_dict_key(dict, "retain_braille") {
+                result = result.retain_braille();
+            }
 
             result
         }
