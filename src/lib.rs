@@ -27,28 +27,28 @@ impl CuredString {
         self.0.contains(other)
     }
 
-    fn __richcmp__(&self, other: &str, op: CompareOp) -> PyResult<bool> {
-        Ok(match op {
+    fn __richcmp__(&self, other: &str, op: CompareOp) -> bool {
+        match op {
             CompareOp::Eq => self.0 == other,
             CompareOp::Ne => self.0 != other,
             _ => false,
-        })
+        }
     }
 
-    fn __contains__(&self, other: &str) -> PyResult<bool> {
-        Ok(self.contains(other))
+    fn __contains__(&self, other: &str) -> bool {
+        self.contains(other)
     }
 
-    fn __bool__(&self) -> PyResult<bool> {
-        Ok(!self.0.is_empty())
+    fn __bool__(&self) -> bool {
+        !self.0.is_empty()
     }
 
-    fn __str__(&self) -> PyResult<&str> {
-        Ok(&self.0)
+    fn __str__(&self) -> &str {
+        &self.0
     }
 
-    fn __repr__(&self) -> PyResult<String> {
-        Ok(format!("{:?}", self.0))
+    fn __repr__(&self) -> String {
+        format!("{:?}", self.0)
     }
 }
 
@@ -60,69 +60,117 @@ fn is_dict_key(dict: &PyDict, key: &'static str) -> bool {
     false
 }
 
-macro_rules! options_override {
-    ($dict:ident,$output:ident,$($option:ident),*) => {
-        $(
-            if is_dict_key($dict, stringify!($output)) {
-                $output = decancer::Options::$option();
-            }
-        )*
-    };
-}
-
-macro_rules! options {
-    ($dict:ident,$output:ident,$($option:ident),*) => {
-        $(
-            if is_dict_key($dict, stringify!($output)) {
-                $output = $output.$option();
-            }
-        )*
-    };
-}
-
 fn kwargs_to_options(options: Option<&PyDict>) -> Options {
+    let mut result = Options::default();
+
     match options {
+        None => result,
         Some(dict) => {
-            let mut output = Options::default();
+            if is_dict_key(dict, "pure_homoglyph") {
+                result = Options::pure_homoglyph();
+            }
 
-            options_override!(dict, output, formatter, pure_homoglyph);
+            if is_dict_key(dict, "retain_capitalization") {
+                result = result.retain_capitalization();
+            }
 
-            options!(
-                dict,
-                output,
-                retain_capitalization,
-                disable_bidi,
-                retain_diacritics,
-                retain_japanese,
-                retain_emojis,
-                retain_greek,
-                retain_cyrillic,
-                retain_hebrew,
-                retain_arabic,
-                retain_devanagari,
-                retain_bengali,
-                retain_armenian,
-                retain_gujarati,
-                retain_tamil,
-                retain_thai,
-                retain_lao,
-                retain_burmese,
-                retain_khmer,
-                retain_mongolian,
-                retain_chinese,
-                retain_korean,
-                retain_braille
-            );
+            if is_dict_key(dict, "disable_bidi") {
+                result = result.disable_bidi();
+            }
 
-            output
+            if is_dict_key(dict, "retain_diacritics") {
+                result = result.retain_diacritics();
+            }
+
+            if is_dict_key(dict, "retain_japanese") {
+                result = result.retain_japanese();
+            }
+
+            if is_dict_key(dict, "retain_emojis") {
+                result = result.retain_emojis();
+            }
+
+            if is_dict_key(dict, "retain_greek") {
+                result = result.retain_greek();
+            }
+
+            if is_dict_key(dict, "retain_cyrillic") {
+                result = result.retain_cyrillic();
+            }
+
+            if is_dict_key(dict, "retain_hebrew") {
+                result = result.retain_hebrew();
+            }
+
+            if is_dict_key(dict, "retain_arabic") {
+                result = result.retain_arabic();
+            }
+
+            if is_dict_key(dict, "retain_devanagari") {
+                result = result.retain_devanagari();
+            }
+
+
+            if is_dict_key(dict, "retain_bengali") {
+                result = result.retain_bengali();
+            }
+
+
+            if is_dict_key(dict, "retain_armenian") {
+                result = result.retain_armenian();
+            }
+
+
+            if is_dict_key(dict, "retain_gujarati") {
+                result = result.retain_gujarati();
+            }
+
+
+            if is_dict_key(dict, "retain_tamil") {
+                result = result.retain_tamil();
+            }
+
+
+            if is_dict_key(dict, "retain_thai") {
+                result = result.retain_thai();
+            }
+
+            if is_dict_key(dict, "retain_lao") {
+                result = result.retain_lao();
+            }
+
+            if is_dict_key(dict, "retain_burmese") {
+                result = result.retain_burmese();
+            }
+
+            if is_dict_key(dict, "retain_khmer") {
+                result = result.retain_khmer();
+            }
+
+            if is_dict_key(dict, "retain_mongolian") {
+                result = result.retain_mongolian();
+            }
+
+            if is_dict_key(dict, "retain_chinese") {
+                result = result.retain_chinese();
+            }
+
+            if is_dict_key(dict, "retain_korean") {
+                result = result.retain_korean();
+            }
+
+            if is_dict_key(dict, "retain_braille") {
+                result = result.retain_braille();
+            }
+
+            result
         }
-
-        None => Options::default(),
     }
 }
 
 /// Parses a jank string into a less toxic lowercase string wrapped in CuredString object.
 #[pyfunction]
+#[pyo3(signature = (text, **options))]
 #[pyo3(text_signature = "(text: str, **options) -> CuredString")]
 pub fn parse<'a>(text: String, options: Option<&PyDict>) -> PyResult<CuredString> {
     match decancer::cure(&text, kwargs_to_options(options)) {
@@ -136,8 +184,7 @@ pub fn parse<'a>(text: String, options: Option<&PyDict>) -> PyResult<CuredString
 /// The module we export to python
 #[pymodule]
 fn decancer_py(_py: Python, m: &PyModule) -> PyResult<()> {
-    m.add("__version__", std::env!("CARGO_PKG_VERSION"))?;
-
     m.add_class::<CuredString>()?;
-    m.add_function(wrap_pyfunction!(parse, m)?)
+    m.add_function(wrap_pyfunction!(parse, m)?)?;
+    m.add("__version__", std::env!("CARGO_PKG_VERSION"))
 }
