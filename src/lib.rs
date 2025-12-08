@@ -170,6 +170,8 @@ fn kwargs_to_options(options: Option<&Bound<'_, PyDict>>) -> Options {
 
 /// Parses a jank string into a less toxic lowercase string wrapped in CuredString object.
 #[pyfunction]
+#[pyo3(signature = (text, **options))]
+#[pyo3(text_signature = "(text: str, **options) -> CuredString")]
 pub fn parse<'a>(text: String, options: Option<&Bound<'_, PyDict>>) -> PyResult<CuredString> {
     match decancer::cure(&text, kwargs_to_options(options)) {
         Ok(res) => Ok(CuredString(res)),
@@ -181,7 +183,7 @@ pub fn parse<'a>(text: String, options: Option<&Bound<'_, PyDict>>) -> PyResult<
 
 /// The module we export to python
 #[pymodule]
-mod delancer_py {
+mod decancer_py {
     use crate::*;
 
     #[pymodule_init]

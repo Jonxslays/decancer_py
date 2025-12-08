@@ -26,14 +26,16 @@ jobs:
         with:
           python-version: ${{ matrix.python-version }}
 
-      - name: Install poetry
-        uses: Gr1N/setup-poetry@v8
+      - name: Setup uv
+        uses: astral-sh/setup-uv@v7.1.2
+        with:
+          activate-environment: true
+          # TODO(https://github.com/astral-sh/setup-uv/issues/226): Remove this.
+          prune-cache: ${{ matrix.os != 'windows-latest' }}
 
       - name: Run test
         run: |
-          pip install -U pip
-          poetry install -q
-          poetry run nox -s tests
+          uvx nox -s tests
 
   linux-x86:
     needs: test-python
