@@ -52,15 +52,15 @@ impl CuredString {
     }
 }
 
-fn is_dict_key(dict: &PyDict, key: &'static str) -> bool {
+fn is_dict_key(dict: &Bound<'_, PyDict>, key: &'static str) -> bool {
     if let Ok(Some(value)) = dict.get_item(key) {
-        return matches!(value.is_true(), Ok(true));
+        return matches!(value.is_truthy(), Ok(true));
     }
 
     false
 }
 
-fn kwargs_to_options(options: Option<&PyDict>) -> Options {
+fn kwargs_to_options(options: Option<&Bound<'_, PyDict>>) -> Options {
     let mut result = Options::default();
 
     match options {
@@ -170,12 +170,10 @@ fn kwargs_to_options(options: Option<&PyDict>) -> Options {
 
 /// Parses a jank string into a less toxic lowercase string wrapped in CuredString object.
 #[pyfunction]
-#[pyo3(signature = (text, **options))]
-#[pyo3(text_signature = "(text: str, **options) -> CuredString")]
-pub fn parse<'a>(text: String, options: Option<&PyDict>) -> PyResult<CuredString> {
+pub fn parse<'a>(text: String, options: Option<&Bound<'_, PyDict>>) -> PyResult<CuredString> {
     match decancer::cure(&text, kwargs_to_options(options)) {
         Ok(res) => Ok(CuredString(res)),
-        Err(err) => Err(Python::with_gil(|_| {
+        Err(err) => Err(Python::attach(|_| {
             PyRuntimeError::new_err(err.to_string())
         })),
     }
@@ -183,8 +181,13 @@ pub fn parse<'a>(text: String, options: Option<&PyDict>) -> PyResult<CuredString
 
 /// The module we export to python
 #[pymodule]
-fn decancer_py(_py: Python, m: &PyModule) -> PyResult<()> {
-    m.add_class::<CuredString>()?;
-    m.add_function(wrap_pyfunction!(parse, m)?)?;
-    m.add("__version__", std::env!("CARGO_PKG_VERSION"))
+mod delancer_py {
+    use crate::*;
+
+    #[pymodule_init]
+    fn init(m: &Bound<'_, PyModule>) -> PyResult<()> {
+        m.add_class::<CuredString>()?;
+        m.add_function(wrap_pyfunction!(parse, m)?)?;
+        m.add("__version__", std::env!("CARGO_PKG_VERSION"))
+    }
 }
