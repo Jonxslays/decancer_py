@@ -79,7 +79,7 @@ jobs:
       - name: Upload wheels
         uses: actions/upload-artifact@v5
         with:
-          name: wheels
+          name: wheels_${{ matrix.os }}_${{ matrix.target }}
           path: dist
 
   release:
@@ -91,8 +91,6 @@ jobs:
     steps:
       - name: Download artifacts
         uses: actions/download-artifact@v6
-        with:
-          name: wheels
 
       - name: Publish to PyPI
         uses: messense/maturin-action@v1
