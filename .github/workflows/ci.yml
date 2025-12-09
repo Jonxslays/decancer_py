@@ -14,7 +14,7 @@ jobs:
       fail-fast: false
       matrix:
         os: [ubuntu-latest, macos-latest, windows-latest]
-        python-version: ["3.8", "3.9", "3.10", "3.11", "3.12"]
+        python-version: ["3.10", "3.11", "3.12", "3.13", "3.14"]
     runs-on: ${{ matrix.os }}
 
     steps:
@@ -26,18 +26,43 @@ jobs:
         with:
           python-version: ${{ matrix.python-version }}
 
-      - name: Install poetry
-        uses: Gr1N/setup-poetry@v8
+      - name: Setup uv
+        uses: astral-sh/setup-uv@v7.1.2
+        with:
+          activate-environment: true
+          # TODO(https://github.com/astral-sh/setup-uv/issues/226): Remove this.
+          prune-cache: ${{ matrix.os != 'windows-latest' }}
 
       - name: Run test
         run: |
-          pip install -U pip
-          poetry install -q
-          poetry run nox -s tests
+          uvx nox -s tests
 
-  linux-x86:
+  build-wheels:
     needs: test-python
-    runs-on: ubuntu-latest
+
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - os: ubuntu-latest
+            target: x86_64
+            extra-flags: "--sdist"
+
+          - os: ubuntu-latest
+            target: i686
+
+          - os: ubuntu-latest
+            target: armv7
+
+          - os: ubuntu-latest
+            target: aarch64
+
+          - os: windows-latest
+
+          - os: macos-latest
+            target: universal2-apple-darwin
+
+    runs-on: ${{ matrix.os }}
 
     steps:
       - name: Checkout code
@@ -46,138 +71,29 @@ jobs:
       - name: Build wheels
         uses: messense/maturin-action@v1
         with:
-          target: x86_64
+          target: ${{ matrix.target }}
           manylinux: auto
           command: build
-          args: "--release -i 3.8 3.9 3.10 3.11 3.12 --sdist -o dist"
+          args: "--release -i 3.10 3.11 3.12 3.13 3.14 -o dist ${{ matrix.extra-flags }}"
 
       - name: Upload wheels
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v5
         with:
-          name: wheels
-          path: dist
-
-  linux-i686:
-    needs: test-python
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v3
-
-      - name: Build wheels
-        uses: messense/maturin-action@v1
-        with:
-          target: i686
-          manylinux: auto
-          command: build
-          args: "--release -i 3.8 3.9 3.10 3.11 3.12 -o dist"
-
-      - name: Upload wheels
-        uses: actions/upload-artifact@v3
-        with:
-          name: wheels
-          path: dist
-
-  linux-armv7:
-    needs: test-python
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v3
-
-      - name: Build wheels
-        uses: messense/maturin-action@v1
-        with:
-          target: armv7
-          manylinux: auto
-          command: build
-          args: "--release -i 3.8 3.9 3.10 3.11 3.12 -o dist"
-
-      - name: Upload wheels
-        uses: actions/upload-artifact@v3
-        with:
-          name: wheels
-          path: dist
-
-  linux-aarch64:
-    needs: test-python
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v3
-
-      - name: Build wheels
-        uses: messense/maturin-action@v1
-        with:
-          target: aarch64
-          manylinux: auto
-          command: build
-          args: "--release -i 3.8 3.9 3.10 3.11 3.12 -o dist"
-
-      - name: Upload wheels
-        uses: actions/upload-artifact@v3
-        with:
-          name: wheels
-          path: dist
-
-  windows:
-    needs: test-python
-    runs-on: windows-latest
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v3
-
-      - name: Build wheels
-        uses: messense/maturin-action@v1
-        with:
-          command: build
-          args: "--release -i 3.8 3.9 3.10 3.11 3.12 -o dist"
-
-      - name: Upload wheels
-        uses: actions/upload-artifact@v3
-        with:
-          name: wheels
-          path: dist
-
-  macos:
-    needs: test-python
-    runs-on: macos-latest
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v3
-
-      - name: Build wheels
-        uses: messense/maturin-action@v1
-        with:
-          command: build
-          args: "--release -i 3.8 3.9 3.10 3.11 3.12 -o dist --target universal2-apple-darwin"
-
-      - name: Upload wheels
-        uses: actions/upload-artifact@v3
-        with:
-          name: wheels
+          name: wheels_${{ matrix.os }}_${{ matrix.target || 'default' }}
           path: dist
 
   release:
     name: Release
     runs-on: ubuntu-latest
     if: ${{ github.event_name == 'release' && github.event.action == 'published' }}
-    needs:
-      [
-        macos,
-        windows,
-        linux-x86,
-        linux-i686,
-        linux-armv7,
-        linux-aarch64,
-        test-python,
-      ]
+    needs: build-wheels
 
     steps:
       - name: Download artifacts
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v6
         with:
-          name: wheels
+          merge-multiple: true
+          path: dist
 
       - name: Publish to PyPI
         uses: messense/maturin-action@v1

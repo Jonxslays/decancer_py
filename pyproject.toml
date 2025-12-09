@@ -1,11 +1,11 @@
 [project]
 name = "decancer_py"
-requires-python = ">=3.8,<3.13"
+requires-python = ">=3.10.0,<3.15"
 description = "Python bindings for decancer."
 authors = [{ name = "Jonxslays" }]
 license = { file = "LICENSE" }
 readme = "README.md"
-version = "0.4.0"
+version = "0.4.1"
 classifiers = [
     "License :: OSI Approved :: MIT License",
     "Programming Language :: Rust",
@@ -22,20 +22,13 @@ documentation = "https://github.com/Jonxslays/decancer_py"
 [tool.maturin]
 strip = true
 
-[tool.poetry]
-name = "decancer_py"
-version = "0.3.0"
-authors = ["Jonxslays"]
-description = "Python bindings for decancer."
-
-[tool.poetry.dependencies]
-python = ">=3.8,<3.13"
-
-[tool.poetry.group.dev.dependencies]
-black = { version = "~=23.7.0", python = ">=3.8"}
-maturin = "~=1.1.0"
-nox = "~=2023.4.22"
-pytest = "~=7.4.0"
+[dependency-groups]
+dev = [
+    "black~=23.7.0; python_version>='3.8'",
+    "maturin~=1.1.0",
+    "nox~=2023.4.22",
+    "pytest~=7.4.0",
+]
 
 [build-system]
 requires = ["maturin~=1.1.0"]
