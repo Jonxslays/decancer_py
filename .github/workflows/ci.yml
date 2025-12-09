@@ -89,6 +89,9 @@ jobs:
     needs: build-wheels
 
     steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
       - name: Setup uv
         uses: astral-sh/setup-uv@v7.1.2
 
