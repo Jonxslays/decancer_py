@@ -89,6 +89,9 @@ jobs:
     needs: build-wheels
 
     steps:
+      - name: Setup uv
+        uses: astral-sh/setup-uv@v7.1.2
+
       - name: Download artifacts
         uses: actions/download-artifact@v6
         with:
@@ -96,9 +99,6 @@ jobs:
           path: dist
 
       - name: Publish to PyPI
-        uses: messense/maturin-action@v1
         env:
-          MATURIN_PYPI_TOKEN: ${{ secrets.PYPI_API_TOKEN }}
-        with:
-          command: upload
-          args: --skip-existing *
+          UV_PUBLISH_TOKEN: ${{ secrets.PYPI_API_TOKEN }}
+        run: uv publish
