@@ -60,7 +60,7 @@ jobs:
           - os: windows-latest
 
           - os: macos-latest
-            target: "universal2-apple-darwin"
+            target: universal2-apple-darwin
 
     runs-on: ${{ matrix.os }}
 
@@ -71,7 +71,7 @@ jobs:
       - name: Build wheels
         uses: messense/maturin-action@v1
         with:
-          target: ${{ matrix.target }}"
+          target: ${{ matrix.target }}
           manylinux: auto
           command: build
           args: "--release -i 3.10 3.11 3.12 3.13 3.14 -o dist ${{ matrix.extra-flags }}"
