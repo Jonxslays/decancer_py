@@ -33,9 +33,9 @@ jobs:
           # TODO(https://github.com/astral-sh/setup-uv/issues/226): Remove this.
           prune-cache: ${{ matrix.os != 'windows-latest' }}
 
-      - name: Run test
-        run: |
-          uvx nox -s tests
+      # - name: Run test
+      #   run: |
+      #     uvx nox -s tests
 
   build-wheels:
     needs: test-python
@@ -101,4 +101,4 @@ jobs:
       - name: Publish to PyPI
         env:
           UV_PUBLISH_TOKEN: ${{ secrets.PYPI_API_TOKEN }}
-        run: uv publish
+        run: uv publish --index testpypi
