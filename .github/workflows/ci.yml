@@ -37,7 +37,7 @@ jobs:
         run: |
           uvx nox -s tests
 
-  build:
+  build-wheels:
     needs: test-python
 
     strategy:
@@ -86,16 +86,7 @@ jobs:
     name: Release
     runs-on: ubuntu-latest
     if: ${{ github.event_name == 'release' && github.event.action == 'published' }}
-    needs:
-      [
-        macos,
-        windows,
-        linux-x86,
-        linux-i686,
-        linux-armv7,
-        linux-aarch64,
-        test-python,
-      ]
+    needs: build-wheels
 
     steps:
       - name: Download artifacts
