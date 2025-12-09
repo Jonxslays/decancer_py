@@ -77,7 +77,7 @@ jobs:
           args: "--release -i 3.10 3.11 3.12 3.13 3.14 -o dist ${{ matrix.extra-flags }}"
 
       - name: Upload wheels
-        uses: actions/upload-artifact@v6
+        uses: actions/upload-artifact@v5
         with:
           name: wheels
           path: dist
