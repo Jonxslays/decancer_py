@@ -18,7 +18,7 @@ crate-type = ["cdylib"]
 
 [dependencies]
 # Sweet lib that does all the work for us
-decancer = "3.3.3"
+decancer = "4.0.0"
 
 # The most beautiful bindings in existence
 pyo3 = { version = "0.27.2", features = ["extension-module"] }
